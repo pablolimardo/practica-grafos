@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escritorio · Práctica de grafos | 4° 1°</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"><style>
+:root{--bg:#0a0e27;--card:rgba(255,255,255,.045);--border:rgba(0,217,255,.2);--cyan:#00d9ff;--blue:#4299e1;--green:#00ff88;--amber:#ffb547;--red:#ff5c7a;--text:#e6ecff;--muted:#9aa6cc;--code:#060918}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(circle at 15% 0%,#16204d 0%,var(--bg) 45%) fixed,var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.6;min-height:100vh}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px 48px}
+h1{font-family:'Orbitron',sans-serif;font-weight:900;background:linear-gradient(90deg,var(--cyan),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.2}
+.chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--cyan);border:1px solid var(--border);border-radius:999px;padding:3px 12px;letter-spacing:1px}
+pre,code{font-family:'JetBrains Mono',monospace}
+code{background:rgba(0,217,255,.1);color:var(--cyan);padding:1px 6px;border-radius:5px;font-size:.9em}
+.codebox{position:relative;margin:10px 0}
+.codebox pre{background:var(--code);border:1px solid rgba(66,153,225,.25);border-radius:12px;padding:16px;overflow-x:auto;font-size:.9rem;line-height:1.55;color:#d6e2ff;white-space:pre}
+.copiar{position:absolute;top:8px;right:8px;font-family:'JetBrains Mono',monospace;font-size:.75rem;background:rgba(0,217,255,.12);color:var(--cyan);border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer}
+.copiar:hover{background:rgba(0,217,255,.25)}.copiar.ok{color:var(--green);border-color:var(--green)}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:28px 0 8px;border-top:1px solid var(--border);margin-top:24px}
+footer b{display:block;font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:.78rem;letter-spacing:1px;font-weight:500;margin-top:4px}
+button{font-family:inherit}
+
+#barra{position:fixed;top:0;left:0;height:4px;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));z-index:100;box-shadow:0 0 12px var(--cyan)}
+header{text-align:center;padding:52px 0 22px}
+header h1{font-size:clamp(1.6rem,5vw,2.5rem);margin-top:14px}
+.subt{color:var(--muted);margin-top:8px}
+nav{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px 0;background:rgba(10,14,39,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);margin-bottom:18px}
+nav a{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card)}
+nav a:hover,nav a.activo{border-color:var(--cyan);color:var(--cyan);background:rgba(0,217,255,.1)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px 22px;margin-bottom:24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,.35);scroll-margin-top:70px}
+.reglas h2,.card h2{font-family:'Orbitron',sans-serif;font-size:1.15rem;color:var(--cyan);letter-spacing:.5px}
+.reglas ul{margin:10px 0 0 22px}.reglas li{margin-bottom:6px}
+.exh{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.4rem;color:#04121f;background:var(--cyan);width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 16px rgba(0,217,255,.4)}
+.ec{color:var(--muted);font-size:.95rem}
+.link{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--cyan);border:1px solid var(--border);border-radius:999px;padding:4px 12px}
+.dato{font-family:'JetBrains Mono',monospace;font-weight:600;background:var(--code);border:1px solid rgba(0,255,136,.3);color:var(--green);border-radius:10px;padding:12px 14px;margin-bottom:12px;overflow-x:auto}
+ol{margin-left:22px}ol li{margin-bottom:14px}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.5px;color:var(--c);border:1px solid var(--c);border-radius:6px;padding:1px 8px;margin-right:4px}
+@media(max-width:600px){.card{padding:20px 16px}.link{margin-left:0}}
+
+.datos{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+.datos span{font-family:'JetBrains Mono',monospace;font-size:.92rem;background:var(--code);border:1px solid rgba(0,255,136,.3);color:var(--green);border-radius:8px;padding:4px 10px}
+li .datos{margin:10px 0 4px}
+.nota{color:var(--muted);margin:-6px 0 12px;font-size:.95rem}
+.glosario{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
+.glosario div{background:rgba(0,217,255,.05);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.95rem}
+.glosario b{color:var(--cyan);display:block;font-family:'JetBrains Mono',monospace;font-size:.85rem;letter-spacing:.5px}
+/* laboratorio */
+.labbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.labbar select,.labbar input{background:var(--code);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:.95rem}
+.labbar input{width:140px}
+.btn{font-weight:600;font-size:.9rem;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:rgba(0,217,255,.12);color:var(--text);cursor:pointer}
+.btn:hover{background:rgba(0,217,255,.25)}
+.btn.verde{background:var(--green);color:#04121f;border-color:var(--green)}
+.btn.rojo{color:var(--red);border-color:rgba(255,92,122,.4);background:rgba(255,92,122,.08)}
+#lienzo{width:100%;height:auto;background:var(--code);border:1px solid rgba(66,153,225,.25);border-radius:12px;touch-action:none;display:block}
+#lienzo text{font-family:'JetBrains Mono',monospace;font-size:13px;fill:#e6ecff;pointer-events:none}
+#estado{color:var(--muted);font-size:.92rem;min-height:1.4em;margin-top:8px}
+#analisis{display:none;margin-top:14px}
+#analisis.visible{display:block}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.res div{background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.3);border-radius:10px;padding:10px 12px}
+.res b{display:block;font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--green)}
+.res span{font-size:.85rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:8px 0}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid rgba(0,217,255,.12)}
+th{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--cyan);text-transform:uppercase}
+.camino{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#rcamino{font-family:'JetBrains Mono',monospace;color:var(--amber);margin-top:6px}
+.ayuda{font-size:.9rem;color:var(--muted);margin-top:6px}
+</style></head><body><div id="barra"></div><div class="wrap">
+<header><span class="chip">4° 1° · ALGORITMOS Y PROGRAMACIÓN · ACPI</span><h1>Práctica de grafos · Escritorio</h1><p class="subt">Nodos, aristas, vecinos, grado, caminos, ciclos y grafos conexos: practicamos lo mismo que se está resolviendo en el pizarrón</p></header>
+<nav><a href="#glosario">Vocabulario</a><a href="#ej1">Ej. 1</a><a href="#ej2">Ej. 2</a><a href="#ej3">Ej. 3</a><a href="#ej4">Ej. 4</a><a href="#ej5">Ej. 5</a><a href="#ej6">Ej. 6</a><a href="#lab">Laboratorio</a></nav>
+<section class="card reglas" id="reglas"><h2>Cómo trabajamos hoy</h2><ul>
+<li>Trabajás con tu compañero/a de banco, como están sentados, y comparten una compu.</li>
+<li>Cada ejercicio va con lo que se está haciendo en el pizarrón. Cuando el profe anuncia un bloque nuevo, pasan al ejercicio con ese número.</li>
+<li>Primero se dibuja y se piensa en papel. La compu, con el laboratorio de grafos, es para comprobar lo que hicieron: no al revés.</li>
+<li>Si a uno de los dos lo llaman al pizarrón, el otro sigue trabajando. Cuando vuelve, se ponen al día y continúan juntos.</li>
+<li>Resuelvan los puntos <b>EN PAPEL</b> en una hoja con los nombres de los dos y entréguenla al final. Los <b>DESAFÍOS ★</b> son para quienes terminan antes.</li></ul></section>
+<section class="card" id="glosario"><h2>Vocabulario de grafos</h2><div class="glosario"><div><b>NODO</b>Cada elemento de la red: un lugar, un sensor, una persona. Se dibuja como un círculo.</div><div><b>ARISTA</b>Una conexión directa entre dos nodos. Se dibuja como una línea.</div><div><b>VECINOS</b>Los nodos unidos a otro por una arista. También se dicen adyacentes.</div><div><b>GRADO</b>La cantidad de aristas que tocan a un nodo, o sea, cuántos vecinos tiene.</div><div><b>CAMINO</b>Una sucesión de nodos unidos por aristas, sin repetir nodos. Su longitud es la cantidad de aristas.</div><div><b>CICLO</b>Un camino que vuelve al nodo de partida sin repetir aristas. Tiene al menos 3 nodos.</div><div><b>CONEXO</b>Un grafo es conexo si desde cualquier nodo se puede llegar a cualquier otro.</div></div></section>
+<section class="card" id="ej1"><div class="exh"><span class="num">1</span><div><h2>Ejercicio 1 · Nodos y aristas</h2><div class="ec">Barrio de la ciudad: cada nodo es un lugar y cada arista una calle</div></div><span class="link">va con las tarjetas 1A y 1B</span></div><div class="datos"><span>Plaza – Escuela</span><span>Plaza – Hospital</span><span>Plaza – Terminal</span><span>Escuela – Hospital</span><span>Terminal – Costanera</span><span>Costanera – Museo</span><span>Hospital – Museo</span></div><ol><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Dibujá el grafo del barrio. ¿Cuántos nodos y cuántas aristas tiene?</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Escribí la lista de aristas de este otro grafo:<div class="codebox"><pre>  A ───── B
+  │       │
+  │       │
+  C ───── D ───── E</pre></div></li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> ¿Plaza y Museo están unidos por una arista? ¿Se puede ir de uno al otro? ¿Por dónde?</li><li><span class="tag" style="--c:var(--green)">EN LA COMPU</span> En el laboratorio, cargá "Ej. 1 · Barrio" y comprobá tus cantidades.</li><li><span class="tag" style="--c:var(--amber)">DESAFÍO ★</span> Dibujá un grafo de 4 nodos con la mayor cantidad posible de aristas, sin repetir ninguna. ¿Cuántas tiene?</li></ol></section><section class="card" id="ej2"><div class="exh"><span class="num">2</span><div><h2>Ejercicio 2 · Vecinos y grado</h2><div class="ec">Antenas WiFi de la escuela</div></div><span class="link">va con las tarjetas 2A y 2B</span></div><div class="datos"><span>AP1 – AP2</span><span>AP1 – AP3</span><span>AP1 – AP4</span><span>AP2 – AP3</span><span>AP3 – AP4</span><span>AP4 – AP5</span></div><ol><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Armá una tabla con los vecinos y el grado de cada antena.</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Sumá todos los grados. ¿Qué relación tiene la suma con la cantidad de aristas? ¿Por qué pasa eso?</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> ¿Puede existir un grafo de 4 nodos con grados 3, 2, 2 y 2? ¿Y con grados 3, 2, 2 y 1? Si existe, dibujalo; si no, explicá por qué.</li><li><span class="tag" style="--c:var(--green)">EN LA COMPU</span> Cargá "Ej. 2 · Antenas WiFi" y comprobá la tabla y la suma.</li><li><span class="tag" style="--c:var(--amber)">DESAFÍO ★</span> Dibujá un grafo de 5 nodos donde todos tengan grado 2. ¿Qué forma tiene?</li></ol></section><section class="card" id="ej3"><div class="exh"><span class="num">3</span><div><h2>Ejercicio 3 · Caminos</h2><div class="ec">Recorrido del colectivo escolar: cada nodo es una parada</div></div><span class="link">va con las tarjetas 3A y 3B</span></div><div class="datos"><span>Escuela – Centro</span><span>Escuela – Barrio Sur</span><span>Centro – Muelle</span><span>Centro – Plaza</span><span>Barrio Sur – Plaza</span><span>Plaza – Barrio Norte</span><span>Muelle – Barrio Norte</span></div><ol><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Escribí todos los caminos de Escuela a Barrio Norte, sin repetir paradas, con la longitud de cada uno.</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> ¿Cuál es la longitud más corta? ¿Cuántos caminos tienen esa longitud?</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Si se corta la calle Centro – Plaza, ¿cambia la longitud más corta? ¿Cuántos caminos más cortos quedan?</li><li><span class="tag" style="--c:var(--green)">EN LA COMPU</span> Cargá "Ej. 3 · Colectivo" y usá "Camino más corto" para comprobar. Después borrá la arista Centro – Plaza y volvé a probar.</li><li><span class="tag" style="--c:var(--amber)">DESAFÍO ★</span> ¿Por qué un camino no repite nodos? ¿Qué pasaría con la cantidad de caminos si se pudiera repetir?</li></ol></section><section class="card" id="ej4"><div class="exh"><span class="num">4</span><div><h2>Ejercicio 4 · Ciclos</h2><div class="ec">Cañerías de riego del invernadero</div></div><span class="link">va con las tarjetas 4A y 4B</span></div><div class="datos"><span>V1 – V2</span><span>V2 – V3</span><span>V3 – V4</span><span>V4 – V1</span><span>V1 – V3</span><span>V4 – V5</span><span>V5 – V6</span></div><ol><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Encontrá todos los ciclos del grafo.</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Sacá la menor cantidad de aristas posible para que no quede ningún ciclo y siga todo conectado. ¿Cuántas sacaste? ¿Cuántas aristas quedan? Comparalo con la cantidad de nodos.</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Un árbol es un grafo conexo y sin ciclos. Si un árbol tiene 10 nodos, ¿cuántas aristas tiene?</li><li><span class="tag" style="--c:var(--green)">EN LA COMPU</span> Cargá "Ej. 4 · Riego", sacá las aristas que elegiste y comprobá que diga "sin ciclos" y "conexo".</li></ol></section><section class="card" id="ej5"><div class="exh"><span class="num">5</span><div><h2>Ejercicio 5 · Grafo conexo</h2><div class="ec">Red de sensores de la represa</div></div><span class="link">va con las tarjetas 5A y 5B</span></div><div class="datos"><span>Compuerta – S1</span><span>S1 – S2</span><span>Compuerta – S2</span><span>Turbina – S3</span><span>S3 – S4</span></div><p class="nota">El sensor S5 no tiene ninguna conexión.</p><ol><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> ¿El grafo es conexo? ¿En cuántos grupos separados queda? ¿Qué grado tiene S5?</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> ¿Cuántas aristas hay que agregar, como mínimo, para que sea conexo? Proponé cuáles.</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> En este otro grafo, encontrá la arista que, si se corta, lo deja dividido en dos:<div class="datos"><span>A – B</span><span>B – C</span><span>C – D</span><span>D – A</span><span>C – E</span><span>E – F</span><span>F – G</span><span>G – E</span></div></li><li><span class="tag" style="--c:var(--green)">EN LA COMPU</span> Cargá "Ej. 5 · Represa", agregá tus aristas y comprobá que quede conexo. Después cargá "Ej. 5 · Segundo grafo" y fijate qué arista marca como puente.</li></ol></section><section class="card" id="ej6"><div class="exh"><span class="num">6</span><div><h2>Ejercicio 6 · Integrador</h2><div class="ec">Tu proyecto de Expotécnica como grafo</div></div><span class="link">va con las tarjetas 6A y 6B</span></div><ol><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Hacé una lista de las partes de tu proyecto (sensores, placas, actuadores, router, pantalla, etc.) y de las conexiones entre ellas.</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> Dibujá el grafo y completá: cantidad de nodos y aristas, el nodo de mayor grado, si es conexo, si tiene ciclos y si tiene alguna arista puente.</li><li><span class="tag" style="--c:var(--blue)">EN PAPEL</span> ¿Qué parte de tu proyecto es la más crítica, la que si falla deja más partes desconectadas? ¿Cómo lo harías más resistente?</li><li><span class="tag" style="--c:var(--green)">EN LA COMPU</span> Elegí "Vacío (Ej. 6)", armá tu grafo desde cero en el laboratorio y comprobá tus respuestas.</li></ol></section>
+<section class="card" id="lab"><h2>Laboratorio de grafos</h2>
+<p class="ayuda">Tocá un nodo y después otro para agregar la arista entre los dos (si ya existe, se borra). Arrastrá los nodos para acomodarlos. "Comprobar" muestra las respuestas: usalo recién después de resolver en papel.</p>
+<div class="labbar"><select id="preset" aria-label="Grafo"></select>
+<input id="nuevo" placeholder="Nombre del nodo" aria-label="Nombre del nodo"><button class="btn" id="btnNodo">Agregar nodo</button>
+<button class="btn rojo" id="btnBorrar">Borrar nodo elegido</button><button class="btn verde" id="btnComp">Comprobar</button></div>
+<svg id="lienzo" viewBox="0 0 720 400" role="img" aria-label="Lienzo del grafo"></svg>
+<div id="estado"></div>
+<div id="analisis"><div class="res" id="res"></div><table id="tabla"></table><div id="detalle"></div>
+<div class="camino"><b>Camino más corto:</b> de <select id="desde" class="btn"></select> a <select id="hasta" class="btn"></select><button class="btn" id="btnCamino">Buscar</button></div><div id="rcamino"></div></div>
+</section>
+<footer>Escuela Industrial N° 9 "15 de Noviembre" · El Calafate, Santa Cruz<b>Prof. Pablo Limardo – Jefatura ACPI</b></footer>
+</div><script>
+const barra=document.getElementById('barra');const links=[...document.querySelectorAll('nav a')];
+window.addEventListener('scroll',()=>{const t=document.documentElement.scrollHeight-innerHeight;barra.style.width=(t>0?scrollY/t*100:0)+'%';
+ let act=null;document.querySelectorAll('section[id]').forEach(s=>{if(s.getBoundingClientRect().top<120)act=s.id});
+ links.forEach(a=>a.classList.toggle('activo',a.getAttribute('href')==='#'+act));});
+
+const PRESETS = {"barrio": {"nombre": "Ej. 1 · Barrio", "aristas": [["Plaza", "Escuela"], ["Plaza", "Hospital"], ["Plaza", "Terminal"], ["Escuela", "Hospital"], ["Terminal", "Costanera"], ["Costanera", "Museo"], ["Hospital", "Museo"]]}, "antenas": {"nombre": "Ej. 2 · Antenas WiFi", "aristas": [["AP1", "AP2"], ["AP1", "AP3"], ["AP1", "AP4"], ["AP2", "AP3"], ["AP3", "AP4"], ["AP4", "AP5"]]}, "colectivo": {"nombre": "Ej. 3 · Colectivo", "aristas": [["Escuela", "Centro"], ["Escuela", "Barrio Sur"], ["Centro", "Muelle"], ["Centro", "Plaza"], ["Barrio Sur", "Plaza"], ["Plaza", "Barrio Norte"], ["Muelle", "Barrio Norte"]]}, "riego": {"nombre": "Ej. 4 · Riego", "aristas": [["V1", "V2"], ["V2", "V3"], ["V3", "V4"], ["V4", "V1"], ["V1", "V3"], ["V4", "V5"], ["V5", "V6"]]}, "represa": {"nombre": "Ej. 5 · Represa", "aristas": [["Compuerta", "S1"], ["S1", "S2"], ["Compuerta", "S2"], ["Turbina", "S3"], ["S3", "S4"]], "sueltos": ["S5"]}, "dosgrupos": {"nombre": "Ej. 5 · Segundo grafo", "aristas": [["A", "B"], ["B", "C"], ["C", "D"], ["D", "A"], ["C", "E"], ["E", "F"], ["F", "G"], ["G", "E"]]}, "vacio": {"nombre": "Vacío (Ej. 6)", "aristas": []}};
+const svg = document.getElementById('lienzo'), NS = 'http://www.w3.org/2000/svg';
+const W = 720, H = 400;
+let nodos = [], aristas = [], sel = null, arrastre = null, resaltado = [];
+const sP = document.getElementById('preset');
+Object.entries(PRESETS).forEach(([k,p]) => { const o = document.createElement('option'); o.value = k; o.textContent = p.nombre; sP.appendChild(o); });
+function cargar(k){
+  const p = PRESETS[k]; const nombres = [];
+  p.aristas.forEach(([a,b]) => { if(!nombres.includes(a)) nombres.push(a); if(!nombres.includes(b)) nombres.push(b); });
+  (p.sueltos||[]).forEach(n => { if(!nombres.includes(n)) nombres.push(n); });
+  nodos = nombres.map((n,i) => { const ang = -Math.PI/2 + i*2*Math.PI/nombres.length; return {id:n, x:W/2+150*Math.cos(ang)*1.55, y:H/2+150*Math.sin(ang)}; });
+  aristas = p.aristas.map(e => [...e]); sel = null; resaltado = []; ocultar(); dibujar(); llenarSelects();
+  msg(nombres.length ? 'Grafo cargado. Primero resolvé en papel; después tocá "Comprobar".' : 'Escribí un nombre y tocá "Agregar nodo" para empezar.');
+}
+function msg(t){ document.getElementById('estado').textContent = t; }
+function existe(a,b){ return aristas.findIndex(([x,y]) => (x===a&&y===b)||(x===b&&y===a)); }
+function dibujar(){
+  svg.innerHTML = '';
+  aristas.forEach(([a,b]) => {
+    const na = nodos.find(n=>n.id===a), nb = nodos.find(n=>n.id===b); if(!na||!nb) return;
+    const ia = resaltado.indexOf(a), ib = resaltado.indexOf(b);
+    const on = ia>=0 && ib>=0 && Math.abs(ia-ib)===1;
+    const l = document.createElementNS(NS,'line');
+    l.setAttribute('x1',na.x); l.setAttribute('y1',na.y); l.setAttribute('x2',nb.x); l.setAttribute('y2',nb.y);
+    l.setAttribute('stroke', on ? '#ffb547' : '#4299e1'); l.setAttribute('stroke-width', on ? 5 : 2.5);
+    svg.appendChild(l);
+  });
+  nodos.forEach(n => {
+    const c = document.createElementNS(NS,'ellipse');
+    c.setAttribute('cx',n.x); c.setAttribute('cy',n.y); c.setAttribute('rx',Math.max(24, n.id.length*4.3+12)); c.setAttribute('ry',24);
+    const hl = resaltado.includes(n.id);
+    c.setAttribute('fill', sel===n.id ? '#3a2a07' : hl ? '#0b3a26' : '#111735');
+    c.setAttribute('stroke', sel===n.id ? '#ffb547' : hl ? '#00ff88' : '#00d9ff'); c.setAttribute('stroke-width', 2.5);
+    c.style.cursor = 'pointer';
+    c.addEventListener('pointerdown', e => { e.preventDefault(); arrastre = {id:n.id, movido:false}; svg.setPointerCapture(e.pointerId); });
+    const t = document.createElementNS(NS,'text');
+    t.setAttribute('x',n.x); t.setAttribute('y',n.y+4.5); t.setAttribute('text-anchor','middle'); t.textContent = n.id;
+    svg.appendChild(c); svg.appendChild(t);
+  });
+}
+function punto(e){ const r = svg.getBoundingClientRect(); return {x:(e.clientX-r.left)/r.width*W, y:(e.clientY-r.top)/r.height*H}; }
+svg.addEventListener('pointermove', e => { if(!arrastre) return; const p = punto(e), n = nodos.find(x=>x.id===arrastre.id);
+  if(Math.hypot(p.x-n.x,p.y-n.y) > 3) arrastre.movido = true;
+  n.x = Math.min(W-30,Math.max(30,p.x)); n.y = Math.min(H-30,Math.max(30,p.y)); dibujar(); });
+svg.addEventListener('pointerup', () => {
+  if(arrastre && !arrastre.movido){
+    const id = arrastre.id;
+    if(sel && sel !== id){
+      const i = existe(sel,id);
+      if(i>=0){ aristas.splice(i,1); msg(`Borraste la arista ${sel} – ${id}.`); }
+      else { aristas.push([sel,id]); msg(`Agregaste la arista ${sel} – ${id}.`); }
+      sel = null; resaltado = []; refrescar();
+    } else if(sel === id){ sel = null; msg('Selección cancelada.'); }
+    else { sel = id; msg(`Nodo ${id} seleccionado. Tocá otro nodo para agregar o borrar la arista entre los dos.`); }
+    dibujar();
+  }
+  arrastre = null;
+});
+document.getElementById('btnNodo').addEventListener('click', () => {
+  const inp = document.getElementById('nuevo'); const id = inp.value.trim();
+  if(!id){ msg('Escribí un nombre para el nodo.'); return; }
+  if(nodos.some(n=>n.id===id)){ msg('Ya existe un nodo con ese nombre.'); return; }
+  nodos.push({id, x:60+Math.random()*(W-120), y:60+Math.random()*(H-120)}); inp.value='';
+  msg(`Agregaste el nodo ${id}. Podés arrastrarlo para acomodarlo.`); refrescar(); dibujar(); llenarSelects();
+});
+document.getElementById('nuevo').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('btnNodo').click(); });
+document.getElementById('btnBorrar').addEventListener('click', () => {
+  if(!sel){ msg('Primero tocá el nodo que querés borrar.'); return; }
+  nodos = nodos.filter(n=>n.id!==sel); aristas = aristas.filter(([a,b]) => a!==sel && b!==sel);
+  msg(`Borraste el nodo ${sel} y sus aristas.`); sel = null; resaltado = []; refrescar(); dibujar(); llenarSelects();
+});
+sP.addEventListener('change', () => cargar(sP.value));
+// ---------- análisis ----------
+function vecinos(){ const v = {}; nodos.forEach(n => v[n.id] = []); aristas.forEach(([a,b]) => { v[a].push(b); v[b].push(a); }); return v; }
+function componentes(v, sin){
+  const vis = new Set(), comps = [];
+  nodos.forEach(n => { if(vis.has(n.id)) return; const c = [], pila = [n.id]; vis.add(n.id);
+    while(pila.length){ const u = pila.pop(); c.push(u); v[u].forEach(w => { if(sin && ((sin[0]===u&&sin[1]===w)||(sin[0]===w&&sin[1]===u))) return; if(!vis.has(w)){ vis.add(w); pila.push(w); } }); }
+    comps.push(c); });
+  return comps;
+}
+function ciclos(v){
+  const res = new Set(), ids = nodos.map(n=>n.id); let cuenta = 0;
+  function dfs(ini, u, camino){
+    if(cuenta > 2000) return;
+    v[u].forEach(w => {
+      if(w === ini && camino.length >= 3){
+        let k = [...camino]; const m = k.indexOf([...k].sort()[0]); k = k.slice(m).concat(k.slice(0,m));
+        if(k[1] > k[k.length-1]) k = [k[0]].concat(k.slice(1).reverse());
+        res.add(k.join(' – ')); cuenta++;
+      } else if(!camino.includes(w) && ids.indexOf(w) > ids.indexOf(ini)) dfs(ini, w, camino.concat(w));
+    });
+  }
+  ids.forEach(s => dfs(s, s, [s]));
+  return [...res].sort((a,b) => a.split(' – ').length - b.split(' – ').length);
+}
+function analizar(){
+  const v = vecinos(), comps = componentes(v), cic = ciclos(v);
+  const puentes = aristas.filter(e => componentes(v, e).length > comps.length);
+  const suma = nodos.reduce((s,n) => s + v[n.id].length, 0);
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  document.getElementById('res').innerHTML = `
+   <div><b>${nodos.length}</b><span>nodos</span></div><div><b>${aristas.length}</b><span>aristas</span></div>
+   <div><b>${suma}</b><span>suma de grados</span></div>
+   <div><b>${comps.length===1 ? 'Sí' : 'No'}</b><span>¿es conexo?${comps.length>1 ? ' ('+comps.length+' grupos)' : ''}</span></div>
+   <div><b>${cic.length ? 'Sí' : 'No'}</b><span>¿tiene ciclos?</span></div>`;
+  document.getElementById('tabla').innerHTML = '<tr><th>Nodo</th><th>Vecinos</th><th>Grado</th></tr>' +
+    nodos.map(n => `<tr><td>${esc(n.id)}</td><td>${v[n.id].length ? v[n.id].map(esc).join(', ') : '(ninguno)'}</td><td>${v[n.id].length}</td></tr>`).join('');
+  document.getElementById('detalle').innerHTML =
+    `<p><b>Grupos:</b> ${comps.map(c => '{ ' + c.map(esc).join(', ') + ' }').join('  ')}</p>` +
+    `<p><b>Ciclos:</b> ${cic.length ? cic.map(esc).join(' &nbsp;·&nbsp; ') : 'ninguno'}</p>` +
+    `<p><b>Aristas puente</b> (si se cortan, el grafo se divide): ${puentes.length ? puentes.map(([a,b]) => esc(a)+' – '+esc(b)).join(', ') : 'ninguna'}</p>`;
+}
+function refrescar(){ if(document.getElementById('analisis').classList.contains('visible')) analizar(); }
+function ocultar(){ document.getElementById('analisis').classList.remove('visible'); document.getElementById('btnComp').textContent = 'Comprobar'; document.getElementById('rcamino').textContent=''; }
+document.getElementById('btnComp').addEventListener('click', () => {
+  const a = document.getElementById('analisis');
+  if(a.classList.toggle('visible')){ analizar(); document.getElementById('btnComp').textContent = 'Ocultar respuestas'; }
+  else ocultar();
+});
+function llenarSelects(){
+  ['desde','hasta'].forEach((id,i) => { const s = document.getElementById(id);
+    s.innerHTML = nodos.map(n => `<option>${n.id.replace(/</g,'&lt;')}</option>`).join(''); if(nodos.length > 1 && i===1) s.selectedIndex = nodos.length-1; });
+}
+document.getElementById('btnCamino').addEventListener('click', () => {
+  const a = document.getElementById('desde').value, b = document.getElementById('hasta').value, v = vecinos();
+  if(!a || !b) return;
+  const cola = [[a]], vis = new Set([a]); let enc = null;
+  while(cola.length){ const c = cola.shift(), u = c[c.length-1]; if(u===b){ enc = c; break; }
+    v[u].forEach(w => { if(!vis.has(w)){ vis.add(w); cola.push(c.concat(w)); } }); }
+  resaltado = enc || []; dibujar();
+  document.getElementById('rcamino').textContent = enc ? `Camino más corto: ${enc.join(' → ')}  (longitud ${enc.length-1})` : `No hay ningún camino de ${a} a ${b}: están en grupos distintos.`;
+});
+cargar('barrio');
+</script></body></html>
